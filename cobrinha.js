@@ -1,17 +1,33 @@
 tamanho = 600;
-escala = 14;
+escala = 15;
 
 function setup() {
     createCanvas(tamanho,tamanho);
     frameRate(10);
     
+    comida = {
+        x:Math.floor(random(0,tamanho/escala))*escala,
+        y:Math.floor(random(0,tamanho/escala))*escala,
+        cor: color(255,0,0),
+        comeu:function(){
+            this.x=Math.floor(random(0,tamanho/escala))*escala;
+            this.y=Math.floor(random(0,tamanho/escala))*escala;   
+        },
+        desenha: function(){
+            fill(this.cor);
+            rect(this.x,this.y,escala,escala);
+            
+        }
+    }
+        
+    
     cobrinha = {
         cor: color(0,255,0),
         corpo: [],
-        dir: createVector(0,0),
+        dir:createVector(0,0),
         viva: true,
         cria: function() {
-            for(i=0;i<40;i++) {
+            for(i=0;i<3;i++) {
                 x = tamanho / 2 + i*escala;
                 y = tamanho / 2;
                 q = createVector(x,y);
@@ -28,11 +44,12 @@ function setup() {
             }
         },
         anda: function() {
+         if(this.tempDir) this.setDir(this.tempDir);   
             q = this.corpo[0].copy();
             q.add(this.dir);
             this.corpo.unshift(q);
             
-            this.corpo.splice(-1,1);
+         
             
             if(this.corpo[0].x < 0){
                 this.corpo[0].x = tamanho - escala;
@@ -53,6 +70,12 @@ function setup() {
                     this.cor = color(189,183,107);
                 }
             }
+            
+            if(this.corpo[0].x == comida.x && this.corpo[0].y == comida.y){
+                comida.comeu();   
+            } else {
+                this.corpo.splice(-1,1);
+            }  
         },
         setDir: function(d) {
             angulo = degrees(p5.Vector.angleBetween(this.dir,d));
@@ -77,6 +100,7 @@ function setup() {
 function draw() {
     background(0);
     cobrinha.desenha();
+    comida.desenha();
 }
 
 function keyPressed() {
@@ -86,7 +110,7 @@ function keyPressed() {
         case 's':
         case 'd':
             d = dirs[key.toLowerCase()]
-            cobrinha.setDir(d)
+            cobrinha.tempDir = d
             break;
     }
 }
