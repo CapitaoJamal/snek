@@ -1,9 +1,16 @@
 tamanho = 600;
 escala = 15;
 
+var img;
+function preload() {
+  img = loadImage("promo_5.png");
+}
+
 function setup() {
     createCanvas(tamanho,tamanho);
     frameRate(10);
+   
+    
     
     comida = {
         x:Math.floor(random(0,tamanho/escala))*escala,
@@ -99,6 +106,7 @@ function setup() {
 
 function draw() {
     background(0);
+    image(img, 0, height/2,img.width/2,img.height/2);
     cobrinha.desenha();
     comida.desenha();
 }
